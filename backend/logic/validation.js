@@ -108,6 +108,9 @@ function reserveStock(items, menu) {
   items.forEach((item) => {
     const dish = next.find((d) => d.id === Number(item.dishId));
     if (!dish) return errors.push(`dish ${item.dishId} vanished`);
+    if (dish.stock < item.qty) {
+      return errors.push(`Only ${dish.stock} ${dish.name} left`);
+    }
     dish.stock -= item.qty;
   });
 
@@ -120,7 +123,7 @@ function releaseStock(items, menu) {
   return menu.map((dish) => {
     const line = items.find((i) => Number(i.dishId) === dish.id);
     if (!line) return dish;
-    return { ...dish, stock: dish.stock - line.qty };
+    return { ...dish, stock: dish.stock + line.qty };
   });
 }
 
